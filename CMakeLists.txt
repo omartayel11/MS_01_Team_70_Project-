@@ -37,6 +37,7 @@ pico_sdk_init()
 
 add_executable(blink
     main.c
+    led.c
     )
 
 # pull in common dependencies

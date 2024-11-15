@@ -1,24 +1,24 @@
+// led.c
 #include "pico/stdlib.h"
 #include "led.h"
 
-
-int pico_led_init(void) {
-    // Initialize all 3 pins
-    gpio_init(LED_GPIO_PINRed);
-    gpio_init(LED_GPIO_PINGreen);
-    gpio_init(LED_GPIO_PINBlue);
-
-    gpio_set_dir(LED_GPIO_PINRed, GPIO_OUT);
-    gpio_set_dir(LED_GPIO_PINGreen, GPIO_OUT);
-    gpio_set_dir(LED_GPIO_PINBlue, GPIO_OUT);
-
-    return PICO_OK;
+// Initializes the LED pin as an output
+void led_init(uint led_pin) {
+    gpio_init(led_pin);          // Initialize the specified GPIO pin
+    gpio_set_dir(led_pin, GPIO_OUT); // Set the GPIO pin as an output
 }
 
+// Turns the LED on by setting the pin to HIGH
+void led_on(uint led_pin) {
+    gpio_put(led_pin, 1);        // Set the GPIO pin to HIGH (turn LED on)
+}
 
-void pico_set_led(bool led_on_Red,bool led_on_Green, bool led_on_Blue ) {
-    // setting the led to on or off
-    gpio_put(LED_GPIO_PINRed, led_on_Red);
-    gpio_put(LED_GPIO_PINGreen, led_on_Green);
-    gpio_put(LED_GPIO_PINBlue, led_on_Blue);
+// Turns the LED off by setting the pin to LOW
+void led_off(uint led_pin) {
+    gpio_put(led_pin, 0);        // Set the GPIO pin to LOW (turn LED off)
+}
+
+// Toggles the LED state
+void led_toggle(uint led_pin) {
+    gpio_put(led_pin, !gpio_get(led_pin)); // Toggle the GPIO pin
 }

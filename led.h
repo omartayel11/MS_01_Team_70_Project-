@@ -1,8 +1,20 @@
-#define LED_GPIO_PINRed 3 // Set GPIO 3 (Pin 5) for LED
-#define LED_GPIO_PINGreen 4 // Set GPIO 4 (Pin 6) for LED
-#define LED_GPIO_PINBlue 5 // Set GPIO 5 (Pin 7) for LED
+// led.h
 
-//macro
+#ifndef LED_H
+#define LED_H
 
-int pico_led_init(void);
-void pico_set_led(bool led_on_Red,bool led_on_Green, bool led_on_Blue);
+#include "pico/stdlib.h"
+
+// Initializes the LED pin as output
+void led_init(uint led_pin);
+
+// Turns the LED on
+void led_on(uint led_pin);
+
+// Turns the LED off
+void led_off(uint led_pin);
+
+// Toggles the LED state
+void led_toggle(uint led_pin);
+
+#endif // LED_H
