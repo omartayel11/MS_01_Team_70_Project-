@@ -11,6 +11,9 @@
 #define FLAME_SENSOR_ADC_PIN 28 
 #define SERVO_PIN 0
 
+#define LED_PIN15 15
+#define IR_PIN14 14
+
 bool direction = true;
 int currentMillis = 0;
 
@@ -24,7 +27,24 @@ int main() {
     flameSensor_init(FLAME_SENSOR_ADC_PIN); // Initialize the Flame Sensor
 
 
+    led_init(LED_PIN15);
+    ir_init(IR_PIN14);
+
+
     while (true) {
+
+
+        if(ir_read(IR_PIN14) == 1){
+            //led_on(LED_PIN15);
+            setMillis(SERVO_PIN, 1250);
+        }
+        else{
+            //led_off(LED_PIN15);
+            setMillis(SERVO_PIN, 400);
+            //sleep_ms(1000);
+        }
+
+       
 
         //sleep_ms(60000);
 
@@ -68,12 +88,13 @@ for (int16_t angle = 180; angle >= 0; angle--) {
         printf("ADC Value: %u, Voltage: %.2fV\n", flame_value, voltage);
 
         if(flame_value<=1000){
-            setMillis(SERVO_PIN, 1250);
+            //setMillis(SERVO_PIN, 1250);
             led_on(LED_PIN2);
             //sleep_ms(2000);
         }
         else{
-            setMillis(SERVO_PIN, 400);
+            //setMillis(SERVO_PIN, 400);
+            led_off(LED_PIN2);
         }
 
         // Delay for readability

@@ -41,6 +41,7 @@ add_executable(blink
     infraRed.c
     servo.c
     flameSensor.c
+    buzzer.c
     )
 
 # pull in common dependencies
