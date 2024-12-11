@@ -20,3 +20,4 @@ float flameSensor_adcToVoltage(uint adc_value) {
     // Assuming a reference voltage of 3.3V
     return (adc_value * 3.3f) / 4095.0f;
 }
+
