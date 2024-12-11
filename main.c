@@ -29,33 +29,41 @@
 #define IR_PIN_SLOT_3 14
 #define IR_PIN_SLOT_4 15
 
+
 #define BUZZER_PIN 16
 
 bool direction = true;
 int currentMillis = 0;
 const uint16_t threshold = 1000;
+int counter = 0;
+bool fireEnded = true;
 
 void flame_sensor_callback() {
 
     printf("Interrupt triggered: Flame sensor value exceeded threshold!\n");
     setMillis(SERVO_PIN_ENTRY_GATE, 1250);
     setMillis(SERVO_PIN_EXIT_GATE, 1250);
-    buzzer_on(BUZZER_PIN);
     led_off(GREEN_LED_PIN_SLOT_1);
     led_off(GREEN_LED_PIN_SLOT_2);
     led_off(GREEN_LED_PIN_SLOT_3);
     led_off(GREEN_LED_PIN_SLOT_4);
 
-    while(true) {
-    printf("LED ON\n");
-    led_on(RED_LED_PIN_SLOT_1);
-    sleep_ms(500);
-    printf("LED OFF\n");
-    led_off(RED_LED_PIN_SLOT_1);
-    sleep_ms(500);
-    printf("Loop iteration complete\n");
-}
-
+    if (counter < 2){
+        led_on(RED_LED_PIN_SLOT_4);
+        buzzer_on(BUZZER_PIN);
+        printf("LED ON\n");
+    }
+    else{
+        if(counter < 4){
+            led_off(RED_LED_PIN_SLOT_4);
+            buzzer_off(BUZZER_PIN);
+            printf("LED OFF\n");
+        }
+        else
+            counter = 0;
+    }
+    printf("Counter : %d", counter);
+    counter++;
 }
 
 bool timer_callback(struct repeating_timer *t) {
@@ -64,9 +72,9 @@ bool timer_callback(struct repeating_timer *t) {
     float voltage = flameSensor_adcToVoltage(flame_value);
     //printf("ADC Value: %u, Voltage: %.2fV\n", flame_value, voltage);
 
-    if (flame_value <= threshold) {
+    if (flame_value <= threshold || !fireEnded) {
+        fireEnded = false;
         flame_sensor_callback(); 
-        return false;
     }
     return true; 
 }
@@ -99,10 +107,21 @@ int main() {
     buzzer_init(BUZZER_PIN);
 
     struct repeating_timer timer;
-    add_repeating_timer_ms(100, timer_callback, NULL, &timer); // Check every 100 ms
+    add_repeating_timer_ms(200, timer_callback, NULL, &timer); // Check every 100 ms
 
 
     while (true) {
+
+        if(ir_read(IR_PIN_SLOT_4) == 1){
+            //led_on(RED_LED_PIN_SLOT_4);
+            //led_off(GREEN_LED_PIN_SLOT_4);
+            fireEnded = true;
+        }
+        
+
+        if(fireEnded){
+
+            buzzer_off(BUZZER_PIN);
 
 
         //ir entry gate
@@ -154,14 +173,15 @@ int main() {
             led_off(RED_LED_PIN_SLOT_3);
         }
 
-        if(ir_read(IR_PIN_SLOT_4) == 1){
-            led_on(RED_LED_PIN_SLOT_4);
-            led_off(GREEN_LED_PIN_SLOT_4);
+        /*if(ir_read(IR_PIN_SLOT_4) == 1){
+            //led_on(RED_LED_PIN_SLOT_4);
+            //led_off(GREEN_LED_PIN_SLOT_4);
+
         }
         else{
             led_on(GREEN_LED_PIN_SLOT_4);
             led_off(RED_LED_PIN_SLOT_4);
-        }
+        }*/
 
         //----------------------------------------------
 
@@ -169,4 +189,7 @@ int main() {
 
     }
 
+
+        }
+        
 }
