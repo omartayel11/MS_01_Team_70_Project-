@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head> 
+        <meta http-equiv="refresh" content="1">
+        <title>PicoW Webserver</title> 
+    </head>
+    <body> <h1>PicoW Webserver Tutorial</h1>
+        <br>
+        <h2>This bit is SSI:</h2>
+        <p>slot1 is: <!--#slot1--></p>
+        <p>slot2 is: <!--#slot2--></p>
+        <p>slot3 is: <!--#slot3--></p>
+        <p>slot4 is: <!--#slot4--></p>
+        <br>
+        
+        <br>
+        <br>
+        <a href="/index.shtml">Refresh</a>
+   </body>
+</html>

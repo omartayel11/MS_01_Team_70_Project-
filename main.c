@@ -1,3 +1,11 @@
+#include "pico/stdlib.h"
+#include "pico/cyw43_arch.h"
+#include "lwip/netif.h"
+#include "lwip/dhcp.h"
+#include "lwip/apps/httpd.h"
+#include "lwipopts.h"
+#include "ssi.h"
+#include "cgi.h"
 #include "led.h"
 #include "infraRed.h"
 #include "servo.h"
@@ -29,7 +37,6 @@
 #define IR_PIN_SLOT_3 14
 #define IR_PIN_SLOT_4 15
 
-
 #define BUZZER_PIN 16
 
 bool direction = true;
@@ -37,6 +44,9 @@ int currentMillis = 0;
 const uint16_t threshold = 1000;
 int counter = 0;
 bool fireEnded = true;
+
+const char WIFI_SSID[] = "WE51903A";
+const char WIFI_PASSWORD[] = "k9236213";
 
 void flame_sensor_callback() {
 
@@ -79,9 +89,19 @@ bool timer_callback(struct repeating_timer *t) {
     return true; 
 }
 
+void print_ip_address() {
+    struct netif *netif = netif_list; // Access the network interface
+    if (netif && netif_is_up(netif)) {
+        printf("IP Address: %s\n", ipaddr_ntoa(&netif->ip_addr));
+    } else {
+        printf("Network interface is down.\n");
+    }
+}
+
 int main() {
 
     stdio_init_all();
+
 
     led_init(GREEN_LED_PIN_SLOT_1);
     led_init(RED_LED_PIN_SLOT_1);
@@ -106,11 +126,34 @@ int main() {
 
     buzzer_init(BUZZER_PIN);
 
+    cyw43_arch_init();
+
+    cyw43_arch_enable_sta_mode();
+
+    // Connect to the WiFI network - loop until connected
+    while(cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, 30000) != 0){
+        printf("Attempting to connect...\n");
+    }
+    // Print a success message once connected
+    printf("Connected! \n");
+    
+    // Initialise web server
+    httpd_init();
+    printf("Http server initialised\n");
+
+    // Configure SSI and CGI handler
+    ssi_init(); 
+    printf("SSI Handler initialised\n");
+    cgi_init();
+    printf("CGI Handler initialised\n");
+
     struct repeating_timer timer;
     add_repeating_timer_ms(200, timer_callback, NULL, &timer); // Check every 100 ms
 
-
     while (true) {
+
+        print_ip_address();
+
 
         if(ir_read(IR_PIN_SLOT_4) == 1){
             //led_on(RED_LED_PIN_SLOT_4);

@@ -38,6 +38,9 @@
     "raspberry-pi-pico.ninjaPath": "${HOME}/.pico-sdk/ninja/v1.12.1/ninja",
     "raspberry-pi-pico.python3Path": "${HOME}/.pico-sdk/python/3.12.1/python.exe",
     "files.associations": {
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "blynksimplewifi.h": "c",
+        "timer.h": "c",
+        "cyw43_arch.h": "c"
     }
 }
