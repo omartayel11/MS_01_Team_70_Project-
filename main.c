@@ -45,8 +45,8 @@ const uint16_t threshold = 1000;
 int counter = 0;
 bool fireEnded = true;
 
-const char WIFI_SSID[] = "WE51903A";
-const char WIFI_PASSWORD[] = "k9236213";
+const char WIFI_SSID[] = "Omar’s iPhone";
+const char WIFI_PASSWORD[] = "tayel20033";
 
 void flame_sensor_callback() {
 
@@ -57,16 +57,15 @@ void flame_sensor_callback() {
     led_off(GREEN_LED_PIN_SLOT_2);
     led_off(GREEN_LED_PIN_SLOT_3);
     led_off(GREEN_LED_PIN_SLOT_4);
+    buzzer_on(BUZZER_PIN);
 
     if (counter < 2){
         led_on(RED_LED_PIN_SLOT_4);
-        buzzer_on(BUZZER_PIN);
         printf("LED ON\n");
     }
     else{
         if(counter < 4){
             led_off(RED_LED_PIN_SLOT_4);
-            buzzer_off(BUZZER_PIN);
             printf("LED OFF\n");
         }
         else

@@ -1,20 +1,212 @@
 <!DOCTYPE html>
-<html>
-    <head> 
-        <meta http-equiv="refresh" content="1">
-        <title>PicoW Webserver</title> 
-    </head>
-    <body> <h1>PicoW Webserver Tutorial</h1>
-        <br>
-        <h2>This bit is SSI:</h2>
-        <p>slot1 is: <!--#slot1--></p>
-        <p>slot2 is: <!--#slot2--></p>
-        <p>slot3 is: <!--#slot3--></p>
-        <p>slot4 is: <!--#slot4--></p>
-        <br>
-        
-        <br>
-        <br>
-        <a href="/index.shtml">Refresh</a>
-   </body>
+<html lang="en">
+<head>
+    <meta http-equiv="refresh" content="1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicoW Webserver - Parking Lot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eef2f3;
+            color: #333;
+        }
+
+        h1 {
+            background-color: #000000;
+            color: white;
+            width: 100%;
+            text-align: center;
+            font-size: 24px;
+            padding: 15px 0;
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .container h2 {
+            text-align: center;
+        }
+
+        .parking-lot {
+            position: relative;
+            background-color: #7d7d7d; /* Asphalt color */
+            width: 100%;
+            height: auto;
+            border: 5px solid #000000; /* Fence */
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .slots {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+            overflow-x: auto; /* Horizontal scrolling for overflow */
+            padding: 0 10px;
+        }
+
+        .slot {
+            flex: 1 1 calc(25% - 10px); /* Adjust width for 4 slots per row */
+            max-width: 100px; /* Maximum width for larger screens */
+            height: auto;
+            aspect-ratio: 2 / 3; /* Maintain a 2:3 ratio */
+            background-color: white;
+            position: relative;
+            border: 2px dashed #ccc;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: transform 0.2s, background-color 0.2s;
+            
+        }
+
+        .slot::after {
+            content: '';
+            width: 90%;
+            height: 4px;
+            background-color: yellow;
+            position: absolute;
+            bottom: -8px;
+            left: 5%;
+        }
+
+        .slot.Free {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .slot.Occupied {
+            background-color: #ff4c4c;
+            color: white;
+        }
+
+        .slot:hover {
+            transform: scale(1.05);
+        }
+
+        .gates-section {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .gate {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .gate.open {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .gate.closed {
+            background-color: #ff4c4c;
+            color: white;
+        }
+
+        .fire-alarm {
+            margin-top: 20px;
+            text-align: center;
+            padding: 15px;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fire-alarm.on {
+            animation: flash 1s infinite alternate;
+        }
+
+        .fire-alarm.off {
+            background-color: #fff;
+        }
+
+        @keyframes flash {
+            from {
+                background-color: #ff4c4c;
+            }
+            to {
+                background-color: #ffe5e5;
+            }
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .slot {
+                flex: 1 1 calc(50% - 10px); /* Adjust for 2 slots per row */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slot {
+                flex: 1 1 calc(100% - 10px); /* Full width for 1 slot per row */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>PicoW Webserver - Parking Lot</h1>
+    <div class="container">
+        <h2>Parking Lot</h2>
+        <div class="parking-lot">
+            <div class="slots">
+                <div class="slot <!--#slot1-->">Slot 1: <!--#slot1--></div>
+                <div class="slot <!--#slot2-->">Slot 2: <!--#slot2--></div>
+                <div class="slot <!--#slot3-->">Slot 3: <!--#slot3--></div>
+                <div class="slot <!--#slot4-->">Slot 4: <!--#slot4--></div>
+            </div>
+        </div>
+
+        <div class="gates-section">
+            <div class="gate <!--#exitGate-->">Entry Gate: <!--#exitGate--></div>
+        </div>
+        <div class="gates-section">
+            <div class="gate <!--#eg-->">Exit Gate: <!--#eg--></div>
+        </div>
+
+
+    </div>
+    <footer>Parking Lot Monitoring System</footer>
+</body>
 </html>
