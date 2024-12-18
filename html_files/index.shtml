@@ -204,6 +204,9 @@
         <div class="gates-section">
             <div class="gate <!--#eg-->">Exit Gate: <!--#eg--></div>
         </div>
+        <div class="fire-alarm">
+            <div class="fire-alarm  <!--#fire-->">FIRE: <!--#fire--></div>
+        </div>
 
 
     </div>

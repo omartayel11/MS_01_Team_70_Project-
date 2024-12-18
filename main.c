@@ -38,6 +38,9 @@
 #define IR_PIN_SLOT_4 15
 
 #define BUZZER_PIN 16
+#define SWITCH_PIN 17
+
+#define DIGITAL_PIN 18
 
 bool direction = true;
 int currentMillis = 0;
@@ -60,11 +63,17 @@ void flame_sensor_callback() {
     buzzer_on(BUZZER_PIN);
 
     if (counter < 2){
+        led_on(RED_LED_PIN_SLOT_1);
+        led_on(RED_LED_PIN_SLOT_2);
+        led_on(RED_LED_PIN_SLOT_3);
         led_on(RED_LED_PIN_SLOT_4);
         printf("LED ON\n");
     }
     else{
         if(counter < 4){
+            led_off(RED_LED_PIN_SLOT_1);
+            led_off(RED_LED_PIN_SLOT_2);
+            led_off(RED_LED_PIN_SLOT_3);
             led_off(RED_LED_PIN_SLOT_4);
             printf("LED OFF\n");
         }
@@ -125,6 +134,12 @@ int main() {
 
     buzzer_init(BUZZER_PIN);
 
+    gpio_init(SWITCH_PIN); 
+    gpio_set_dir(SWITCH_PIN, GPIO_IN);
+
+    gpio_init(DIGITAL_PIN);
+    gpio_set_dir(DIGITAL_PIN, GPIO_IN);
+
     cyw43_arch_init();
 
     cyw43_arch_enable_sta_mode();
@@ -151,10 +166,12 @@ int main() {
 
     while (true) {
 
-        print_ip_address();
+        //print_ip_address();
+
+        printf("DIGITAL PIN: %d\n", gpio_get(DIGITAL_PIN));
 
 
-        if(ir_read(IR_PIN_SLOT_4) == 1){
+        if(gpio_get(SWITCH_PIN) == 1){
             //led_on(RED_LED_PIN_SLOT_4);
             //led_off(GREEN_LED_PIN_SLOT_4);
             fireEnded = true;
@@ -167,7 +184,7 @@ int main() {
 
 
         //ir entry gate
-        if(ir_read(IR_PIN_ENTRY_GATE) == 1){
+        if(ir_read(IR_PIN_ENTRY_GATE) == 1 && (ir_read(IR_PIN_SLOT_1) == 0 || ir_read(IR_PIN_SLOT_2) == 0 || ir_read(IR_PIN_SLOT_3) == 0  || ir_read(IR_PIN_SLOT_4) == 0)){
             setMillis(SERVO_PIN_ENTRY_GATE, 1250);
             sleep_ms(2000);
         }
@@ -215,15 +232,15 @@ int main() {
             led_off(RED_LED_PIN_SLOT_3);
         }
 
-        /*if(ir_read(IR_PIN_SLOT_4) == 1){
-            //led_on(RED_LED_PIN_SLOT_4);
-            //led_off(GREEN_LED_PIN_SLOT_4);
+        if(ir_read(IR_PIN_SLOT_4) == 1){
+            led_on(RED_LED_PIN_SLOT_4);
+            led_off(GREEN_LED_PIN_SLOT_4);
 
         }
         else{
             led_on(GREEN_LED_PIN_SLOT_4);
             led_off(RED_LED_PIN_SLOT_4);
-        }*/
+        }
 
         //----------------------------------------------
 
